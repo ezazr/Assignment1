@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import ThemeToggle from "./themetoggle";
 
 const links = [
   { href: "/", label: "Home" },
@@ -53,6 +54,7 @@ export default function Header() {
           </ul>
         </nav>
       </div>
+      <ThemeToggle />
     </header>
   );
 }

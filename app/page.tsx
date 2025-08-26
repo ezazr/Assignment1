@@ -1,103 +1,99 @@
-import Image from "next/image";
+"use client";
+import { useMemo, useState } from "react";
 
-export default function Home() {
+export default function HomePage() {
+  const [tabs, setTabs] = useState(["Tab 1", "Tab 2"]);
+  const [content, setContent] = useState(["Hello 1", "Hello 2"]);
+
+  // Generate inline HTML output
+  const output = useMemo(() => {
+    const css = `
+<style>
+  body { font-family: sans-serif; margin: 1rem; }
+  #tabs { display: flex; gap: .5rem; margin-bottom: .75rem; }
+  #tabs button { border:1px solid #ccc; padding:.5rem .75rem; border-radius:.5rem; background:#f7f7f7; cursor:pointer }
+  #tabs button[aria-selected="true"]{ background:#e3e3e3; outline:2px solid #333 }
+  .panel{ display:none; border:1px solid #ddd; padding:1rem; border-radius:.5rem }
+  .panel[aria-hidden="false"]{ display:block }
+</style>`;
+
+    const js = `
+<script>
+(function(){
+  const tabs = document.querySelectorAll('#tabs button');
+  const panels = document.querySelectorAll('.panel');
+  function activate(i){
+    tabs.forEach((b,idx)=>b.setAttribute('aria-selected', idx===i));
+    panels.forEach((p,idx)=>p.setAttribute('aria-hidden', idx!==i));
+    localStorage.setItem('lastTabIndex', i);
+  }
+  tabs.forEach((b,i)=>b.addEventListener('click', ()=>activate(i)));
+  const saved = parseInt(localStorage.getItem('lastTabIndex')||'0',10);
+  activate(isNaN(saved)?0:saved);
+})();
+</script>`;
+
+    const buttons = tabs.map((t,i)=>
+      `<button role="tab" aria-selected="false" id="tab-${i}" aria-controls="panel-${i}">${t}</button>`
+    ).join("");
+
+    const panels = content.map((c,i)=>
+      `<div role="tabpanel" class="panel" id="panel-${i}" aria-labelledby="tab-${i}" aria-hidden="true">${c}</div>`
+    ).join("");
+
+    return `<!doctype html><html lang="en"><meta charset="utf-8"><title>Hello</title>${css}
+<body>
+  <h1>Tabs Demo</h1>
+  <div id="tabs" role="tablist">${buttons}</div>
+  ${panels}
+${js}
+</body></html>`;
+  }, [tabs, content]);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <section className="prose dark:prose-invert">
+      <h1>Generate Tabs HTML + JS (inline CSS)</h1>
+      <p>Configure your tabs, then copy and save the output into <code>Hello.html</code>.</p>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      <h2>Configure Tabs</h2>
+      <div>
+        {tabs.map((t,i)=>(
+          <div key={i} className="mb-2 flex gap-2">
+            <input
+              value={t}
+              onChange={e=>{
+                const copy=[...tabs]; copy[i]=e.target.value; setTabs(copy);
+              }}
+              className="border rounded px-2 py-1"
+              placeholder={`Tab ${i+1} Title`}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <input
+              value={content[i]}
+              onChange={e=>{
+                const copy=[...content]; copy[i]=e.target.value; setContent(copy);
+              }}
+              className="border rounded px-2 py-1 flex-1"
+              placeholder={`Tab ${i+1} Content`}
+            />
+          </div>
+        ))}
+      </div>
+
+      <button
+        className="border rounded px-3 py-2 my-2"
+        onClick={()=>{ setTabs([...tabs, `Tab ${tabs.length+1}`]); setContent([...content, `Hello ${content.length+1}`]); }}
+      >
+        + Add Tab
+      </button>
+
+      <h2>Output (Hello.html)</h2>
+      <textarea className="w-full h-80 border rounded p-2" value={output} readOnly />
+      <button
+        className="border rounded px-3 py-2 mt-2"
+        onClick={async ()=>{ await navigator.clipboard.writeText(output); alert("Copied! Paste into Hello.html"); }}
+      >
+        Copy to Clipboard
+      </button>
+    </section>
   );
 }
