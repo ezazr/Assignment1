@@ -4,6 +4,8 @@ import "./globals.css";
 import StudentBadge from "@/components/StudentBadge";
 import Header  from "@/components/header";
 import Footer from "@/components/footer";
+import { ThemeProvider } from "next-themes";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,16 +28,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en"suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <a
+      href="#main"
+      className="sr-only focus:not-sr-only focus:absolute top-2 left-2 
+            bg-white text-black dark:bg-black dark:text-white p-2 rounded"
+            >
+              Skip to content
+    </a>
         <StudentBadge />
         <Header />
-        <main className="max-w-3xl mx-auto px-4 py-6">
+        <main id="main" className="max-w-3xl mx-auto px-4 py-6">
         {children}
         </main>
         <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
