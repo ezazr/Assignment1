@@ -30,12 +30,29 @@ export default function Header() {
       <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
         <button
           aria-label="Menu"
-          className="md:hidden border px-3 py-2 rounded"
-          onClick={() => setOpen(!open)}
-          aria-expanded={open}
-          aria-controls="mainmenu"
-        >
-          ☰
+  className="md:hidden relative w-10 h-10 flex items-center justify-center"
+  onClick={() => setOpen(!open)}
+  aria-expanded={open}
+  aria-controls="mainmenu"
+>
+  {/* Top line */}
+  <span
+    aria-hidden
+    className={`absolute h-[2px] w-6 bg-current transition-transform duration-200
+                ${open ? "rotate-45 translate-y-[2px]" : "-translate-y-2"}`}
+  />
+  {/* Middle line */}
+  <span
+    aria-hidden
+    className={`absolute h-[2px] w-6 bg-current transition-opacity duration-200
+                ${open ? "opacity-0" : "opacity-100"}`}
+  />
+  {/* Bottom line */}
+  <span
+    aria-hidden
+    className={`absolute h-[2px] w-6 bg-current transition-transform duration-200
+                ${open ? "-rotate-45 -translate-y-[2px]" : "translate-y-2"}`}
+  />
         </button>
 
         <nav id="mainmenu" aria-label="Main" className={`md:block ${open ? "block" : "hidden"}`}>

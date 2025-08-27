@@ -5,6 +5,7 @@ import StudentBadge from "@/components/StudentBadge";
 import Header  from "@/components/header";
 import Footer from "@/components/footer";
 import { ThemeProvider } from "next-themes";
+import Breadcrumbs from "@/components/breadcrumbs";
 
 
 const geistSans = Geist({
@@ -43,6 +44,7 @@ export default function RootLayout({
     </a>
         <StudentBadge />
         <Header />
+        <Breadcrumbs />
         <main id="main" className="max-w-3xl mx-auto px-4 py-6">
         {children}
         </main>
